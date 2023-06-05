@@ -1312,7 +1312,7 @@ function main(userinfo) {
                         if (textContains("你在新的设备登录学习强国，为了保障你的账户安全，需要使用短信验证码确认").exists()) {
                             //上传需验证
                             var account = a
-                            var num = jinr0
+                            var num = 0
                             var status = 2
                             cccc = open("/sdcard/37.txt");
                             bbbb = cccc.read()

@@ -418,7 +418,7 @@ function sc() {
         swipe(device_w / 2, .8 * device_h, device_w / 2, .1 * device_h, 1000);
         log("minebounds: " + b.bounds());
         sleep(6000);
-        do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), log("点击设置按钮: " + e + "," + c), click(e, c); while (!id("setting_sign_out").findOne(1500))
+        do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), log("点击设置按钮: " + e + "," + c), Tap(e, c); while (!id("setting_sign_out").findOne(1500))
     }
     log("等待退出登录");
     b = id("setting_sign_out").findOne();
@@ -1186,7 +1186,7 @@ function main(userinfo) {
                     swipe(device_w / 2, .8 * device_h, device_w / 2, .1 * device_h, 1000);
                     log("minebounds: " + b.bounds());
                     sleep(6000);
-                    do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), log("点击设置按钮: " + e + "," + c), click(e, c); while (!id("setting_sign_out").findOne(1500))
+                    do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), log("点击设置按钮: " + e + "," + c), Tap(e, c); while (!id("setting_sign_out").findOne(1500))
                 }
                 log("等待退出登录");
                 b = id("setting_sign_out").findOne();

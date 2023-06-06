@@ -3,7 +3,7 @@ setScreenMetrics(1080, 2160); // 修改这里 屏幕分辨率,主要影响的是
 
 var videoNum = 6; // 至少观看几个视频
 var videoTimeInMinute = 9; // 视频至少观看几分钟
-var articleNum = 8; // 一共阅读几篇文章
+var articleNum = 7; // 一共阅读几篇文章
 var articleCommentNum = 1; // 一共需要评论几篇文章
 var articleTimeInMinute = 6; // 文章至少阅读几分钟
 // 修改这里 修改下方的“北京”为自己的城市 或者 修改学习强国中的本地城市为北京
@@ -1287,7 +1287,7 @@ function main(userinfo) {
                     } else if (id("message").exists()) {
                         if (textContains("号码或密码错误，请重新输入").exists()) {
                             //上传密码错误
-                            
+                            wj = open("/sdcard/文本.txt");
                             du = wj.read()
                             var username = du;
                             var password = du;
@@ -1318,6 +1318,7 @@ function main(userinfo) {
                     } else {
                         if (textContains("你在新的设备登录学习强国，为了保障你的账户安全，需要使用短信验证码确认").exists()) {
                             //上传需验证
+                            wj = open("/sdcard/文本.txt");
                             du = wj.read()
                             var username = du;
                             var password = du;

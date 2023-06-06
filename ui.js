@@ -418,7 +418,7 @@ function sc() {
         swipe(device_w / 2, .8 * device_h, device_w / 2, .1 * device_h, 1000);
         log("minebounds: " + b.bounds());
         sleep(6000);
-        do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), log("点击设置按钮: " + e + "," + c), Tap(e, c); while (!id("setting_sign_out").findOne(1500))
+        do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), log("点击设置按钮: " + e + "," + c), click(e, c); while (!id("setting_sign_out").findOne(1500))
     }
     log("等待退出登录");
     b = id("setting_sign_out").findOne();
@@ -1186,7 +1186,7 @@ function main(userinfo) {
                     swipe(device_w / 2, .8 * device_h, device_w / 2, .1 * device_h, 1000);
                     log("minebounds: " + b.bounds());
                     sleep(6000);
-                    do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), log("点击设置按钮: " + e + "," + c), Tap(e, c); while (!id("setting_sign_out").findOne(1500))
+                    do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), log("点击设置按钮: " + e + "," + c), click(e, c); while (!id("setting_sign_out").findOne(1500))
                 }
                 log("等待退出登录");
                 b = id("setting_sign_out").findOne();
@@ -1230,11 +1230,7 @@ function main(userinfo) {
                 {}
             );
             console.log(res);
-            wj = open("/sdcard/文本.txt");
-            du = wj.read()
-            var device = du;
             var token = (res['token'])
-
             var res = POST_request(
                 "http://38.47.205.96:8081/CloudOnline/users/cloudGet?=&device=" + device + "&token=" + token,
                 {}
@@ -1291,7 +1287,7 @@ function main(userinfo) {
                     } else if (id("message").exists()) {
                         if (textContains("号码或密码错误，请重新输入").exists()) {
                             //上传密码错误
-                            wj = open("/sdcard/文本.txt");
+                            
                             du = wj.read()
                             var username = du;
                             var password = du;
@@ -1300,8 +1296,6 @@ function main(userinfo) {
                                 {}
                             );
                             console.log(res);
-                            wj = open("/sdcard/文本.txt");
-                            du = wj.read()
                             var token = (res['token'])
                             var account = a
                             var num = 0
@@ -1310,6 +1304,7 @@ function main(userinfo) {
                             cccc = open("/sdcard/37.txt");
                             bbbb = cccc.read()
                             var username = bbbb; log(username)
+                            wj = open("/sdcard/文本.txt");
 
 
                             var res = POST_request("http://38.47.205.96:8081/CloudOnline/user/update?token=" + token + "&username=" + username + "&account=" + account + "&num=" + num + "&status=" + status + "&integral=" + integral,
@@ -1323,7 +1318,6 @@ function main(userinfo) {
                     } else {
                         if (textContains("你在新的设备登录学习强国，为了保障你的账户安全，需要使用短信验证码确认").exists()) {
                             //上传需验证
-                            wj = open("/sdcard/文本.txt");
                             du = wj.read()
                             var username = du;
                             var password = du;
@@ -1332,15 +1326,15 @@ function main(userinfo) {
                                 {}
                             );
                             console.log(res);
-                            wj = open("/sdcard/文本.txt");
-                            du = wj.read()
                             var token = (res['token'])
                             var account = a
                             var num = 0
-                            var status = 2
+                            var status = 0
+                            var integral = 0
                             cccc = open("/sdcard/37.txt");
                             bbbb = cccc.read()
                             var username = bbbb; log(username)
+                            wj = open("/sdcard/文本.txt");
 
 
                             var res = POST_request("http://38.47.205.96:8081/CloudOnline/user/update?token=" + token + "&username=" + username + "&account=" + account + "&num=" + num + "&status=" + status + "&integral=" + integral,

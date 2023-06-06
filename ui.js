@@ -5,7 +5,7 @@ var videoNum = 6; // 至少观看几个视频
 var videoTimeInMinute = 9; // 视频至少观看几分钟
 var articleNum = 7; // 一共阅读几篇文章
 var articleCommentNum = 1; // 一共需要评论几篇文章
-var articleTimeInMinute = 6; // 文章至少阅读几分钟
+var articleTimeInMinute = 8; // 文章至少阅读几分钟
 // 修改这里 修改下方的“北京”为自己的城市 或者 修改学习强国中的本地城市为北京
 var city = "北京"; // 当前城市
 var isCheckSpecialQuestionsOnce = true;    // 是否只检查一次专项答题，true 的话将只检查进入专项答题的第一页，不会一直往下翻到头。建议使用true，因为翻到头要很久，可能也会很卡。

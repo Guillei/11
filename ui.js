@@ -117,178 +117,85 @@ function killXXQG() {
 function xxqg() {
     
 
-    device.keepScreenOn(60 * 60 * 1000)// 设置屏幕常亮10分钟
-
-    
+    device.keepScreenOn(60 * 60 * 1000)// 设置屏幕常亮
 
     // 取消新版本体验
     if (text("取消").exists()) {
         text("取消").click()
         sleep(3000);
     }
-    
-    // 获取视频以及文章的积分
-    if (!skipWatch) {
-        var xx = id("home_bottom_tab_text_highlight").className("android.widget.TextView").text("工作").findOne().bounds() // 获取学习的位置（即底部栏中间的按钮）
-        click(xx.centerX(), xx.centerY()); // 点击学习
-        sleep(2000);
-        className("android.widget.FrameLayout").clickable(true).depth(15).find()[2].click(); // 展开全部频道
-        sleep(2000);
-        click(city); // 点击本地
-        sleep(1500);
-        banner = classNameContains("RecyclerView").findOne();
-        //log(banner);        
-        sleep(1000);
-        log("查找北京学习平台，尝试点击");
-        first_obj = banner.findOne(text("北京学习平台"));
-        //   while (!text("北京学习平台").findOne().parent().click()) {log("click: false");}
-        //   log("click: true");
-        //   real_click(text("北京学习平台").findOne().parent());
-        real_click(first_obj.parent());
-        log("等待加载");
-        sleep(1000);
-        text("新思想扎根京华").waitFor();
-        sleep(2000);
+    enterMyScore(maxTryEnterMyScore)
+    var scoreToday = getCurrentScore(); // 获取当前积分
+
+
+    if (40 > scoreToday) { // 分数还不足40则进行
         back()
-        var xxpt = textEndsWith('学习平台').findOne(5000); // 等待页面刷新
-        // 没找到说明可能没刷新出来
-        id("tv_search_marquee").findOne().click()
-        sleep(2000); setText(0, "唐诗三百首");sleep(2000)
-        click("");
-        className("android.view.View").text("唐诗三百首·五言绝句 电台-听文化-听诗文 ").findOne().click(); sleep(3000); click("全部播放"); back(); sleep(11500)
-        back(); sleep(2000); back(); sleep(2000); back(); sleep(2000); back(); sleep(2000); back(); sleep(2000); back(); sleep(2000);
-        app.launchApp("学习强国");
-        sleep(7000);
-        setInfo('开始学习文章');
-        className("android.widget.FrameLayout").clickable(true).depth(15).find()[2].click(); // 展开全部频道
-        sleep(3000);
-        click("旅游"); // 点击本地
-        sleep(3000);
-        text("旅游头条").waitFor();
-        sleep(3000);
-        Swipe(500, 1600, 500, 600, 1000); sleep(1000); Swipe(500, 1600, 500, 600, 1000); sleep(1000); sleep(1000); Swipe(500, 1600, 500, 600, 1000)
-        var lastReadedArticleTitle = "" // 上次阅读的文章标题
-        var top = device.height / 10 * 2, bottom = device.height / 10 * 9; // 默认的可视范围，如果下面的 view 没有正确识别出来，就使用该默认值，因此可能需要修改（通常情况下不需要修改）
-        var view = className("android.widget.FrameLayout").depth(14).findOne(500) // 文章列表的容器的范围
-        if (view != null) {
-            top = view.bounds().top + 10 // 列表页的上界+10
-            bottom = id("home_bottom_tab_button_ding").findOne().bounds().top - 10 //百灵的上界-10
-            console.log("main view top:", (top - 10), "bottom:", (bottom + 10))
+        // 获取视频以及文章的积分
+        enterMyScore(maxTryEnterMyScore);
+        wenzhang()
+
+
+        enterMyScore(maxTryEnterMyScore); // 进入我的积分
+
+        // 每日答题
+        var everydayQuestions = className("android.view.View").text("每日答题").findOne();
+        while ("去答题" == everydayQuestions.parent().child(4).text()) { // 每日答题还没拿满分
+            everydayQuestions.parent().child(4).click(); // 进入每日答题
+            answerQuestions(5);
+            sleep(random(100, 200) * 10);
+            back();
+            sleep(random(200, 300) * 10);
+            everydayQuestions = className("android.view.View").text("每日答题").findOne();
         }
-        console.log("set bounds: top:", top, "bottom:", bottom, "\n")
-        for (var i = 0; i < articleNum; i++) {
-            setInfo('正在阅读第' + (i + 1) + '篇文章');
-            sleep(2000);
-          
-            sleep(3000);
-            var articles = className("android.widget.TextView").depth(25).find(); // 只看这种标题深度为25的文章，深度为24的文章可能有视频，不计入文章阅读
-            // 如果没找到文章，或者找到的最后一篇文章是上一篇，又或者找到的文章不在可视范围内，就重新再找新的
-            if (articles.empty() ||
-                articles[articles.length - 1].text() == lastReadedArticleTitle ||
-                articles[articles.length - 1].text() == "加载中" ||
-                articles[articles.length - 1].bounds().top < top ||
-                articles[articles.length - 1].bounds().top > bottom ||
-                articles[articles.length - 1].bounds().centerX() < 0) {
-                i--;
-                setInfo('无符合要求的文章，继续找');
-                sleep(1000);
-                Swipe(500, 1600, 500, 600, 1000)
-                continue;
-            }
-            var nextArticle = articles[articles.length - 1]
-            lastReadedArticleTitle = nextArticle.text()
-            console.log("nextArticle:", lastReadedArticleTitle, "\nbounds:", nextArticle.bounds(), "\n")
-            click(lastReadedArticleTitle, 0)
-            sleep(10 * 1000); // 等待10秒
-            if (!text("欢迎发表你的观点").exists() ||
-                className("android.widget.SeekBar").exists()) { // 如果无法评论或者顶部有视频，则跳过
-                i--;
-                back();
-                continue;
-            }
-            if (i < articleCommentNum) {
-                className("android.widget.TextView").text("欢迎发表你的观点").findOne().click() // 点开评论
-                sleep(3000);
-                setText(comments[random(0, comments.length - 1)]); // 随机评论
-                sleep(3000);
-                click("发布"); // 点击发布
-                sleep(random(20, 50) * 100); // 继续等待5~10秒
-                text("删除").findOne().click();
-                sleep(1000);
-                text("确认").findOne().click();
-                sleep(random(20, 50) * 100)
-            } else if (i != articleNum - 1) {
-                sleep(random(50, 100) * 100); // 其他文章一共阅读15~20秒
-            } else {
-                watchLongTime(articleTimeInMinute, "文章"); // 最后一篇文章阅读久一点
-            }
-            setInfo("第" + (i + 1) + "篇文章阅读完成");
-            back(); // 返回学习强国首页
-            sleep(3000); 
-        }
-    }
-
-
-
-    enterMyScore(maxTryEnterMyScore); // 进入我的积分
-
-    // 每日答题
-    var everydayQuestions = className("android.view.View").text("每日答题").findOne();
-    while ("去答题" == everydayQuestions.parent().child(4).text()) { // 每日答题还没拿满分
-        everydayQuestions.parent().child(4).click(); // 进入每日答题
-        answerQuestions(5);
+        setInfo("每日答题 OK");
         sleep(random(100, 200) * 10);
-        back();
-        sleep(random(200, 300) * 10);
-        everydayQuestions = className("android.view.View").text("每日答题").findOne();
-    }
-    setInfo("每日答题 OK");
-    sleep(random(100, 200) * 10);
 
-    
 
-    try {
-        var scoreToday = getCurrentScore(); // 获取当前积分
 
-        var str = "日一二三四五六".charAt(new Date().getDay()); log(str);
+        try {
+            var scoreToday = getCurrentScore(); // 获取当前积分
 
-        if (40 > scoreToday) { // 分数还不足40则进行
-            if (str == '一' || str == '四') {
+            var str = "日一二三四五六".charAt(new Date().getDay()); log(str);
+
+            if (40 > scoreToday) { // 分数还不足40则进行
+                if (str == '一' || str == '四') {
+                    foursomeCompetition();
+                } else if (str == '三' || str == '六') {
+                    pvp();
+                } else if (str == '二' || str == '五' || str == '日') {
+                    answerChallenge();
+                }
                 foursomeCompetition();
-            } else if (str == '三' || str == '六') {
-                pvp();
-            } else if (str == '二' || str == '五' || str == '日') {
-                answerChallenge();
+                scoreToday = getCurrentScore();
+                sleep(random(2000, 3000));
             }
-            foursomeCompetition();
-            scoreToday = getCurrentScore();
-            sleep(random(2000, 3000));
+
+            // TODO: 下面的订阅逻辑可能有问题，但通常情况下执行到这里都会满40分，所以很少会进行这一步，因此暂时不做修改
+            // if (40 > scoreToday) { // 如果分数不足40，尝试订阅
+            //     var leftToSub = subscribe();
+            //     scoreToday += (2 - leftToSub);
+            //     setInfo(scoreToday)
+            //     sleep(random(2000, 3000));
+            // }
+
+
+
+
+        } catch (error) {
+            showConsole = true
+            console.error(error)
+        } finally {
+            if (!showConsole) {
+                console.clear()
+            }
         }
+        back() // 回到学习强国主界面
+        sleep(random(1000, 2000));
+        sc()
 
-        // TODO: 下面的订阅逻辑可能有问题，但通常情况下执行到这里都会满40分，所以很少会进行这一步，因此暂时不做修改
-        // if (40 > scoreToday) { // 如果分数不足40，尝试订阅
-        //     var leftToSub = subscribe();
-        //     scoreToday += (2 - leftToSub);
-        //     setInfo(scoreToday)
-        //     sleep(random(2000, 3000));
-        // }
-
-
-       
-        
-    } catch (error) {
-        showConsole = true
-        console.error(error)
-    } finally {
-        if (!showConsole) {
-            console.clear()
-        }
+    } else {
+        back(); sc()
     }
-    back() // 回到学习强国主界面
-    sleep(random(1000, 2000));
-    sc()
-    
-
 }
 
 function sc() {
@@ -551,7 +458,7 @@ function vibrateSeconds(n) {
 // 进入"我的积分"
 function enterMyScore(tryCount) {
     sleep(1000);
-    id("cn.xuexi.android:id/comm_head_xuexi_score").findOne().click(); // 点击我的积分
+    id("comm_head_xuexi_score").findOne().click(); // 点击我的积分
     // 等待页面刷新
     if (text("登录").findOne(3000) != null) {
         sleep(1000);
@@ -562,6 +469,7 @@ function enterMyScore(tryCount) {
         if (tryCount <= 0) {
             vibrateSeconds(10); // 震动10秒提醒失败
             log("无法进入我的积分!");
+            exit(); // 结束脚本
         } else {
             back();
             sleep(2000);
@@ -1011,6 +919,121 @@ function answerChallenge() {
     setInfo("挑战答题已完成");
     sleep(random(1000, 2000));
 }
+
+
+
+//文章
+function wenzhang() {
+    sleep(random(1000, 2000));
+    var wz = className("android.view.View").text("我要选读文章").findOne();
+    if ("去看看" == wz.parent().child(4).text()) { // 文章还没完成
+        wz.parent().child(4).click(); // 进入文章阅读
+        startwenzhang()
+    }
+    setInfo("文章已完成");
+    sleep(random(1000, 2000));
+}
+//开始文章
+function startwenzhang() {
+    var xx = id("home_bottom_tab_text_highlight").className("android.widget.TextView").text("工作").findOne().bounds() // 获取学习的位置（即底部栏中间的按钮）
+    click(xx.centerX(), xx.centerY()); // 点击学习
+    sleep(2000);
+    className("android.widget.FrameLayout").clickable(true).depth(15).find()[2].click(); // 展开全部频道
+    sleep(2000);
+    click(city); // 点击本地
+    sleep(1500);
+    banner = classNameContains("RecyclerView").findOne();
+    //log(banner);        
+    sleep(1000);
+    log("查找北京学习平台，尝试点击");
+    first_obj = banner.findOne(text("北京学习平台"));
+    //   while (!text("北京学习平台").findOne().parent().click()) {log("click: false");}
+    //   log("click: true");
+    //   real_click(text("北京学习平台").findOne().parent());
+    real_click(first_obj.parent());
+    log("等待加载");
+    sleep(1000);
+    text("新思想扎根京华").waitFor();
+    sleep(2000);
+    back()
+    var xxpt = textEndsWith('学习平台').findOne(5000); // 等待页面刷新
+    // 没找到说明可能没刷新出来
+    id("tv_search_marquee").findOne().click()
+    sleep(2000); setText(0, "唐诗三百首"); sleep(2000)
+    click("");
+    className("android.view.View").text("唐诗三百首·五言绝句 电台-听文化-听诗文 ").findOne().click(); sleep(3000); click("全部播放"); back(); sleep(11500)
+    back(); sleep(2000); back(); sleep(2000); back(); sleep(2000); back(); sleep(2000); back(); sleep(2000); back(); sleep(2000);
+    app.launchApp("学习强国");
+    sleep(7000);
+    setInfo('开始学习文章');
+    className("android.widget.FrameLayout").clickable(true).depth(15).find()[2].click(); // 展开全部频道
+    sleep(3000);
+    click("旅游"); // 点击本地
+    sleep(3000);
+    text("旅游头条").waitFor();
+    sleep(3000);
+    Swipe(500, 1600, 500, 600, 1000); sleep(1000); Swipe(500, 1600, 500, 600, 1000); sleep(1000); sleep(1000); Swipe(500, 1600, 500, 600, 1000)
+    var lastReadedArticleTitle = "" // 上次阅读的文章标题
+    var top = device.height / 10 * 2, bottom = device.height / 10 * 9; // 默认的可视范围，如果下面的 view 没有正确识别出来，就使用该默认值，因此可能需要修改（通常情况下不需要修改）
+    var view = className("android.widget.FrameLayout").depth(14).findOne(500) // 文章列表的容器的范围
+    if (view != null) {
+        top = view.bounds().top + 10 // 列表页的上界+10
+        bottom = id("home_bottom_tab_button_ding").findOne().bounds().top - 10 //百灵的上界-10
+        console.log("main view top:", (top - 10), "bottom:", (bottom + 10))
+    }
+    console.log("set bounds: top:", top, "bottom:", bottom, "\n")
+    for (var i = 0; i < articleNum; i++) {
+        setInfo('正在阅读第' + (i + 1) + '篇文章');
+        sleep(2000);
+
+        sleep(3000);
+        var articles = className("android.widget.TextView").depth(25).find(); // 只看这种标题深度为25的文章，深度为24的文章可能有视频，不计入文章阅读
+        // 如果没找到文章，或者找到的最后一篇文章是上一篇，又或者找到的文章不在可视范围内，就重新再找新的
+        if (articles.empty() ||
+            articles[articles.length - 1].text() == lastReadedArticleTitle ||
+            articles[articles.length - 1].text() == "加载中" ||
+            articles[articles.length - 1].bounds().top < top ||
+            articles[articles.length - 1].bounds().top > bottom ||
+            articles[articles.length - 1].bounds().centerX() < 0) {
+            i--;
+            setInfo('无符合要求的文章，继续找');
+            sleep(1000);
+            Swipe(500, 1600, 500, 600, 1000)
+            continue;
+        }
+        var nextArticle = articles[articles.length - 1]
+        lastReadedArticleTitle = nextArticle.text()
+        console.log("nextArticle:", lastReadedArticleTitle, "\nbounds:", nextArticle.bounds(), "\n")
+        click(lastReadedArticleTitle, 0)
+        sleep(10 * 1000); // 等待10秒
+        if (!text("欢迎发表你的观点").exists() ||
+            className("android.widget.SeekBar").exists()) { // 如果无法评论或者顶部有视频，则跳过
+            i--;
+            back();
+            continue;
+        }
+        if (i < articleCommentNum) {
+            className("android.widget.TextView").text("欢迎发表你的观点").findOne().click() // 点开评论
+            sleep(3000);
+            setText(comments[random(0, comments.length - 1)]); // 随机评论
+            sleep(3000);
+            click("发布"); // 点击发布
+            sleep(random(20, 50) * 100); // 继续等待5~10秒
+            text("删除").findOne().click();
+            sleep(1000);
+            text("确认").findOne().click();
+            sleep(random(20, 50) * 100)
+        } else if (i != articleNum - 1) {
+            sleep(random(50, 100) * 100); // 其他文章一共阅读15~20秒
+        } else {
+            watchLongTime(articleTimeInMinute, "文章"); // 最后一篇文章阅读久一点
+        }
+        setInfo("第" + (i + 1) + "篇文章阅读完成");
+        back(); // 返回学习强国首页
+        sleep(3000);
+    }
+}
+
 // 开始四人赛
 function startFoursomeCompetition() {
     text("开始比赛").waitFor() // 等待界面刷新
@@ -1220,7 +1243,7 @@ function main(userinfo) {
                     a = (res.data.account); setText(0, a); sleep(1E3)
                     b = (res.data.password); setText(1, b); sleep(1E3); id("btn_next").findOne().click(); sleep(20E3)
                     if (textContains("我的").exists()) {
-                        var retry_time; var watchdog = 1100
+                        var retry_time; var watchdog = 1000
                         if (!Number(watchdog)) {
                             retry_time = 5400;
                         } else if (Number(watchdog) < 900) {

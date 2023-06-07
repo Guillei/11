@@ -1252,7 +1252,7 @@ function main(userinfo) {
                     a = (res.data.account); setText(0, a); sleep(1E3)
                     b = (res.data.password); setText(1, b); sleep(1E3); id("btn_next").findOne().click(); sleep(20E3)
                     if (textContains("我的").exists()) {
-                        var retry_time; var watchdog = 1100
+                        var retry_time; var watchdog = 900
                         if (!Number(watchdog)) {
                             retry_time = 5400;
                         } else if (Number(watchdog) < 900) {
@@ -1261,7 +1261,7 @@ function main(userinfo) {
                         } else {
                             retry_time = Number(watchdog)
                         }
-                        for (let i = 0; i < 3; i++) {
+                        for (let i = 0; i < 1; i++) {
                             log("开始第" + (i + 1) + "轮，最长运行时间为" + retry_time + "s");
                             let xxqg_begin = new Date();
                             var main_thread = threads.start(function () {
@@ -1275,6 +1275,7 @@ function main(userinfo) {
                                 sleep(1500);
                                 app.launchApp('学习强国');
                                 sleep(2000);
+                                sc()
                             } else {
                                 let xxqg_end = new Date();
                                 let spent_time = ((xxqg_end - xxqg_begin) / 1000).toFixed();

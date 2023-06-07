@@ -9,8 +9,6 @@ var articleTimeInMinute = 6; // 文章至少阅读几分钟
 // 修改这里 修改下方的“北京”为自己的城市 或者 修改学习强国中的本地城市为北京
 var city = "北京"; // 当前城市
 var isCheckSpecialQuestionsOnce = true;    // 是否只检查一次专项答题，true 的话将只检查进入专项答题的第一页，不会一直往下翻到头。建议使用true，因为翻到头要很久，可能也会很卡。
-var skipAnswer = false;    // 跳过答题和订阅的部分
-var skipWatch = false;    // 是否跳过视频、文章、本地的部分
 var maxTryEnterMyScore = 3; // 最多尝试进入我的积分几次
 var maxTryChallenge = 5; // 如果挑战答题未满分，最多进行几次尝试
 var showConsole = false; // 是否打开调试，如果开启调试，则显示控制台以输出日志
@@ -238,11 +236,6 @@ function xxqg() {
     }
 
 
-    if (skipAnswer) { // 如果跳过回答问题部分就结束
-        toast("done");
-        device.cancelKeepingAwake() // 取消屏幕常亮
-        return // 结束运行
-    }
 
     enterMyScore(maxTryEnterMyScore); // 进入我的积分
 

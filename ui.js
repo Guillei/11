@@ -119,14 +119,7 @@ function xxqg() {
 
     device.keepScreenOn(60 * 60 * 1000)// 设置屏幕常亮10分钟
 
-    exit_app("学习强国");
-    sleep(1500);
-
-    app.launchApp("学习强国");
-    sleep(7000);
-    toast('脚本正在运行');
-    askFrame.close();
-    sleep(3000);
+    
 
     // 取消新版本体验
     if (text("取消").exists()) {

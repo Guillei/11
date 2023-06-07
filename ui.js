@@ -133,7 +133,20 @@ function xxqg() {
         // 获取视频以及文章的积分
         enterMyScore(maxTryEnterMyScore);
         wenzhang()
+        app.launchApp("学习强国")
+        while (true) {
+            // 获取控件id为1的控件对象
+            var controlId1 = id("comm_head_xuexi_score").findOne();
 
+            if (controlId1) {
+                // 存在则停止循环
+                break;
+            } else {
+                // 不存在则返回并休息2秒
+                back();
+                sleep(2000);
+            }
+        }
 
         enterMyScore(maxTryEnterMyScore); // 进入我的积分
 
@@ -930,7 +943,7 @@ function wenzhang() {
         wz.parent().child(4).click(); // 进入文章阅读
         startwenzhang()
     }
-    setInfo("文章已完成");back()
+    setInfo("文章已完成");
     sleep(random(1000, 2000));
 }
 //开始文章

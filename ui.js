@@ -562,7 +562,6 @@ function enterMyScore(tryCount) {
         if (tryCount <= 0) {
             vibrateSeconds(10); // 震动10秒提醒失败
             log("无法进入我的积分!");
-            exit(); // 结束脚本
         } else {
             back();
             sleep(2000);

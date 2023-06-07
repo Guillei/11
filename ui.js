@@ -5,7 +5,7 @@ var videoNum = 6; // 至少观看几个视频
 var videoTimeInMinute = 9; // 视频至少观看几分钟
 var articleNum = 7; // 一共阅读几篇文章
 var articleCommentNum = 1; // 一共需要评论几篇文章
-var articleTimeInMinute = 8; // 文章至少阅读几分钟
+var articleTimeInMinute = 6; // 文章至少阅读几分钟
 // 修改这里 修改下方的“北京”为自己的城市 或者 修改学习强国中的本地城市为北京
 var city = "北京"; // 当前城市
 var isCheckSpecialQuestionsOnce = true;    // 是否只检查一次专项答题，true 的话将只检查进入专项答题的第一页，不会一直往下翻到头。建议使用true，因为翻到头要很久，可能也会很卡。
@@ -418,7 +418,7 @@ function sc() {
         swipe(device_w / 2, .8 * device_h, device_w / 2, .1 * device_h, 1000);
         log("minebounds: " + b.bounds());
         sleep(6000);
-        do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), log("点击设置按钮: " + e + "," + c), Tap(e, c); while (!id("setting_sign_out").findOne(1500))
+        do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), log("点击设置按钮: " + e + "," + c), click(e, c); while (!id("setting_sign_out").findOne(1500))
     }
     log("等待退出登录");
     b = id("setting_sign_out").findOne();
@@ -1085,10 +1085,10 @@ function foursomeCompetition() {
 }
 // 开始双人对战
 function startPvP() {
-    var pp = className("android.view.View").text("随机匹配").findOne(); // 等待界面刷新
-    sleep(random(1000, 2000));
-    pp.parent().child(0).click(); // 开始随机匹配
-    dealWithAccessError();
+    text("随机匹配").waitFor();
+    sleep(1000);
+    let match = text("随机匹配").findOne().parent().child(0);
+    real_click(match)
     sleep(random(5000, 7000)); // 等待随机匹配
     while (true) {
         if (className("android.widget.RadioButton").findOne(5000) != null) { // 等待选项出现，如果选项出现了说明还没结束
@@ -1103,17 +1103,16 @@ function startPvP() {
             }
         }
         // 是否结束
-        if (text("继续挑战").exists()) { // 双人对战只能进行一次，因此完成一次直接退出
-            sleep(random(2000, 3000))
-            back()
-            sleep(random(2000, 3000))
-            back()
-            sleep(random(2000, 3000))
-            if (className("android.widget.Button").text("退出").findOne(3000) != null) {
-                className("android.widget.Button").text("退出").findOne().click()
-            }
-            sleep(random(2000, 3000))
-            return
+            if (text("继续挑战").exists()) {
+                sleep(1000);
+                let tz_click = text("继续挑战").findOne().click();
+                log("点击继续挑战:" + tz_click);
+                sleep(1500);
+                back();
+                var exit_click = text("退出").findOne().click();
+                log("点击退出:" + exit_click);
+                sleep(1000);
+                return
         }
     }
 }
@@ -1174,7 +1173,7 @@ function main(userinfo) {
             exit_app("学习强国");
             sleep(1500);
             app.launchApp('学习强国');
-            sleep(10000);
+            sleep(7000);
             if (text("我的").exists) {
                 var [device_w, device_h] = init_wh();
                 b = text("我的").findOne();
@@ -1186,7 +1185,7 @@ function main(userinfo) {
                     swipe(device_w / 2, .8 * device_h, device_w / 2, .1 * device_h, 1000);
                     log("minebounds: " + b.bounds());
                     sleep(6000);
-                    do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), log("点击设置按钮: " + e + "," + c), Tap(e, c); while (!id("setting_sign_out").findOne(1500))
+                    do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), log("点击设置按钮: " + e + "," + c), click(e, c); while (!id("setting_sign_out").findOne(1500))
                 }
                 log("等待退出登录");
                 b = id("setting_sign_out").findOne();
@@ -1252,7 +1251,7 @@ function main(userinfo) {
                     a = (res.data.account); setText(0, a); sleep(1E3)
                     b = (res.data.password); setText(1, b); sleep(1E3); id("btn_next").findOne().click(); sleep(20E3)
                     if (textContains("我的").exists()) {
-                        var retry_time; var watchdog = 900
+                        var retry_time; var watchdog = 1100
                         if (!Number(watchdog)) {
                             retry_time = 5400;
                         } else if (Number(watchdog) < 900) {

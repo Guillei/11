@@ -930,7 +930,7 @@ function wenzhang() {
         wz.parent().child(4).click(); // 进入文章阅读
         startwenzhang()
     }
-    setInfo("文章已完成");
+    setInfo("文章已完成");back()
     sleep(random(1000, 2000));
 }
 //开始文章

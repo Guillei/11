@@ -1282,8 +1282,6 @@ function main(userinfo) {
                                 return true
                             }
                         }
-                        
-                        exit();
                     } else if (id("message").exists()) {
                         if (textContains("号码或密码错误，请重新输入").exists()) {
                             //上传密码错误

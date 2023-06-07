@@ -12,25 +12,7 @@ var isCheckSpecialQuestionsOnce = true;    // 是否只检查一次专项答题�
 var maxTryEnterMyScore = 3; // 最多尝试进入我的积分几次
 var maxTryChallenge = 5; // 如果挑战答题未满分，最多进行几次尝试
 var showConsole = false; // 是否打开调试，如果开启调试，则显示控制台以输出日志
-var autoLockAndUnlock = false; // 是否自动解锁屏幕以及完成后锁屏（用于定时自动执行），如果是true的话需要自行完成下面的 unlock 和 lock 两个函数（最主要是 unlock 函数），当然如果每天手动运行脚本的话不影响
-var killXXQGInStart = false; // 开始获取积分前杀掉学习强国，主要是为了控制脚本开始运行时学习强国的状态是可预料的。该项不是必须的。如果true的话需要自行完成下方的 killXXQG 函数
 
-// 修改这里 (这部分是在锁屏状态下，自动进行解锁的代码。不保证任何UI的设备都能适配，因此需要自己摸索。如果每天手动运行的话，这部分不修改也不影响)
-function unlock() {
-    // 下方的函数仅作参考
-    if (!device.isScreenOn()) { // 如果在息屏状态
-        sleep(2000);
-        device.wakeUp(); // 唤醒屏幕
-        sleep(2000);
-       Swipe(200, 300, 200, 1000, 1000); // 下拉通知栏
-        sleep(2000);
-        click(230, 230); // 点击左上角时间用于唤醒解锁界面
-        sleep(2000);
-        gesture(1000, [250, 1240], [540, 1240], [540, 1530], [830, 1240]); // 解锁手势
-        sleep(random(10, 100) * 100); // 休眠若干秒
-        toast('成功解锁!');
-    }
-}
 function exit_app(name) {
     // fClear();
     log("尝试结束" + name + "APP");
@@ -90,26 +72,6 @@ function real_click(obj) {
     click(obj.bounds().centerX(), obj.bounds().centerY());
     return false;
 }
-// 修改这里 (这部分是在从下拉控制栏中点击锁屏来关闭手机)
-function lock() {
-    // 下拉控制栏
-    if (quickSettings()) {
-        sleep(2000);
-        click(180, 1300); // 点击快捷操作栏中的锁屏所在的位置
-    }
-}
-
-// 修改这里 (下面这几行代码块是杀掉后台的学习强国，需要根据自己的设备情况调整。目标是从应用详情中点击强制停止-确认强制停止)
-function killXXQG() {
-    openAppSetting(getPackageName("学习强国"));
-    sleep(1500);
-    click(500, 100); // 如果有弹窗，点击空白处关掉弹窗
-    sleep(500);
-    click("结束运行"); // 点击结束运行
-    sleep(1500);
-    click("确定"); // 是否强行停止？ - 确定
-    sleep(1500);
-}
 
 
 
@@ -165,43 +127,22 @@ function xxqg() {
 
 
 
-        try {
-            var scoreToday = getCurrentScore(); // 获取当前积分
+        var scoreToday = getCurrentScore(); // 获取当前积分
 
-            var str = "日一二三四五六".charAt(new Date().getDay()); log(str);
+        var str = "日一二三四五六".charAt(new Date().getDay()); log(str);
 
-            if (40 > scoreToday) { // 分数还不足40则进行
-                if (str == '一' || str == '四') {
-                    foursomeCompetition();
-                } else if (str == '三' || str == '六') {
-                    pvp();
-                } else if (str == '二' || str == '五' || str == '日') {
-                    answerChallenge();
-                }
+        if (40 > scoreToday) { // 分数还不足40则进行
+            if (str == '一' || str == '四') {
                 foursomeCompetition();
-                scoreToday = getCurrentScore();
-                sleep(random(2000, 3000));
-            }
-
-            // TODO: 下面的订阅逻辑可能有问题，但通常情况下执行到这里都会满40分，所以很少会进行这一步，因此暂时不做修改
-            // if (40 > scoreToday) { // 如果分数不足40，尝试订阅
-            //     var leftToSub = subscribe();
-            //     scoreToday += (2 - leftToSub);
-            //     setInfo(scoreToday)
-            //     sleep(random(2000, 3000));
-            // }
-
-
-
-
-        } catch (error) {
-            showConsole = true
-            console.error(error)
-        } finally {
-            if (!showConsole) {
-                console.clear()
+            } else if (str == '三' || str == '六') {
+                pvp();
+            } else if (str == '二' || str == '五' || str == '日') {
+                answerChallenge();
             }
         }
+            foursomeCompetition();
+            scoreToday = getCurrentScore();
+            sleep(random(2000, 3000));
         back() // 回到学习强国主界面
         sleep(random(1000, 2000));
         sc()
@@ -985,7 +926,7 @@ function startwenzhang() {
     sleep(3000);
     text("旅游头条").waitFor();
     sleep(3000);
-    Swipe(500, 1600, 500, 600, 1000); sleep(1000); Swipe(500, 1600, 500, 600, 1000); sleep(1000); sleep(1000); Swipe(500, 1600, 500, 600, 1000)
+    Swipe(500, 1300, 500, 600, 1000); sleep(1000); Swipe(500, 1300, 500, 600, 1000); sleep(1000);
     var lastReadedArticleTitle = "" // 上次阅读的文章标题
     var top = device.height / 10 * 2, bottom = device.height / 10 * 9; // 默认的可视范围，如果下面的 view 没有正确识别出来，就使用该默认值，因此可能需要修改（通常情况下不需要修改）
     var view = className("android.widget.FrameLayout").depth(14).findOne(500) // 文章列表的容器的范围
@@ -1011,7 +952,7 @@ function startwenzhang() {
             i--;
             setInfo('无符合要求的文章，继续找');
             sleep(1000);
-            Swipe(500, 1600, 500, 600, 1000)
+            Swipe(500, 1600, 500, 1200, 1000)
             continue;
         }
         var nextArticle = articles[articles.length - 1]

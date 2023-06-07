@@ -433,23 +433,7 @@ var w = floaty.window(
         <text id="text">学习强国！</text>
     </frame>
 );
-var askFrame = floaty.window(
-    <vertical bg="#44ffcc00" paddingTop="20" w="auto">
-        <text id="text">是否跳过部分步骤？不选择则默认不跳过</text>
-        <button id="skipWatch" w="auto" text="跳过视频、阅读" />
-        <button id="skipAnswer" w="auto" text="跳过答题" />
-    </vertical>
-);
-askFrame.skipWatch.click(() => {
-    skipWatch = true;
-    toast("跳过视频、阅读");
-    askFrame.close();
-});
-askFrame.skipAnswer.click(() => {
-    skipAnswer = true;
-    toast("跳过答题");
-    askFrame.close();
-});
+
 
 var comments = [
     "爱迪生：天才是百分之一的勤奋加百分之九十九的汗水。",
